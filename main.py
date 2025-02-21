@@ -39,13 +39,31 @@ sol_RK45 = rk45_integrate(
     tol=1e-7
 )
 
-# Решение методом DOPRI8
+# Решение методом DOPRI8 (эталонное)
 sol_DOPRI8 = dopri8_integrate(
     chua_deriv, t_span, state0, t_eval,
     args=(params['G'], params['C1'], params['C2'], params['L'], params['Ga'], params['Gb']),
     tol=1e-7
 )
 
+# Вычисление ошибок
+# Абсолютная ошибка для каждого временного шага: вектор разности решений
+error_vec = sol_RK45['y'] - sol_DOPRI8['y']
+# L2-норма ошибки по каждому временно шагу (норма по столбцам)
+error_L2 = np.linalg.norm(error_vec, axis=0)
+
+# Относительная ошибка: отношение L2-нормы ошибки к L2-норме эталонного решения
+epsilon = 1e-12  # для избежания деления на 0
+norm_DOPRI8 = np.linalg.norm(sol_DOPRI8['y'], axis=0)
+error_rel = error_L2 / (norm_DOPRI8 + epsilon)
+
+# Вывод некоторых характеристик ошибок
+print("Максимальная L2-норма ошибки:", np.max(error_L2))
+print("Средняя L2-норма ошибки:", np.mean(error_L2))
+print("Максимальная относительная ошибка:", np.max(error_rel))
+print("Средняя относительная ошибка:", np.mean(error_rel))
+
+# Извлечение компонентов для построения фазовых портретов
 v1_RK45 = sol_RK45['y'][0]
 iL_RK45 = sol_RK45['y'][2]
 v1_DOPRI8 = sol_DOPRI8['y'][0]
