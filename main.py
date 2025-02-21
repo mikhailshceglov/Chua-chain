@@ -1,3 +1,5 @@
+import json
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
@@ -12,32 +14,44 @@ def chua_deriv(t, state, G, C1, C2, L, Ga, Gb, Bp=1.0):
     diLdt = -v2 / L
     return np.array([dv1dt, dv2dt, diLdt])
 
-# Параметры
-params = {
-    'L': 1/7,
-    'G': 0.7,
-    'C1': 1/9,
-    'C2': 1,
-    'Ga': -0.8,
-    'Gb': -0.5
-}
+# Чтение набора параметров из файла params.json
+parser = argparse.ArgumentParser(description="Симуляция цепи Чуа")
+parser.add_argument('--set', default='default', help="Имя набора параметров из файла params.json")
+args = parser.parse_args()
+
+with open('params.json', 'r') as f:
+    data = json.load(f)
+params = data.get(args.set)
+if params is None:
+    raise ValueError(f"Набор параметров '{args.set}' не найден в файле params.json")
+print(f"Используем набор параметров: {args.set}")
+print(params)
 
 state0 = [0.1, 0.0, 0.0]
 t_span = (0, 100)
 n_points = 10000
 t_eval = np.linspace(t_span[0], t_span[1], n_points)
 
-# Решения
-sol_RK45 = rk45_integrate(chua_deriv, t_span, state0, t_eval,args=(params['G'], params['C1'], params['C2'], params['L'], params['Ga'], params['Gb']), tol=1e-7)
+# Решение методом RK45
+sol_RK45 = rk45_integrate(
+    chua_deriv, t_span, state0, t_eval,
+    args=(params['G'], params['C1'], params['C2'], params['L'], params['Ga'], params['Gb']),
+    tol=1e-7
+)
 
-sol_DOPRI8 = dopri8_integrate(chua_deriv, t_span, state0, t_eval, args=(params['G'], params['C1'], params['C2'], params['L'], params['Ga'], params['Gb']), tol=1e-7)
+# Решение методом DOPRI8
+sol_DOPRI8 = dopri8_integrate(
+    chua_deriv, t_span, state0, t_eval,
+    args=(params['G'], params['C1'], params['C2'], params['L'], params['Ga'], params['Gb']),
+    tol=1e-7
+)
 
 v1_RK45 = sol_RK45['y'][0]
 iL_RK45 = sol_RK45['y'][2]
 v1_DOPRI8 = sol_DOPRI8['y'][0]
 iL_DOPRI8 = sol_DOPRI8['y'][2]
 
-# Границы графиков
+# Определение границ графиков
 all_v1 = np.concatenate((v1_RK45, v1_DOPRI8))
 all_iL = np.concatenate((iL_RK45, iL_DOPRI8))
 xlim = (np.min(all_v1), np.max(all_v1))
@@ -91,7 +105,7 @@ ax4.plot(v1_RK45, iL_RK45, lw=0.5, color='blue', label='RK45 (Custom)')
 ax4.plot(v1_DOPRI8, iL_DOPRI8, lw=0.5, color='magenta', label='DOPRI8 (Custom)')
 ax4.legend()
 
-# Анимация
+# Функции для анимации
 def init():
     line_RK45_ax1.set_data([], [])
     line_DOPRI8_ax2.set_data([], [])
@@ -106,8 +120,7 @@ def update(frame):
     line_DOPRI8_ax3.set_data(v1_DOPRI8[:frame], iL_DOPRI8[:frame])
     return line_RK45_ax1, line_DOPRI8_ax2, line_RK45_ax3, line_DOPRI8_ax3
 
-anim = FuncAnimation(fig, update, frames=n_points, init_func=init,
-                     interval=1, blit=True)
+anim = FuncAnimation(fig, update, frames=n_points, init_func=init, interval=1, blit=True)
 
 plt.tight_layout()
 plt.show()
