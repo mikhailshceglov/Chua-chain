@@ -17,14 +17,14 @@
     \begin{aligned}
     C_1 \frac{dv_1}{dt} &= G \(v_2 - v_1) \-\ g(v_1),\\
     C_2 \frac{dv_2}{dt} &= G \(v_1 - v_2) \+\ i_L,\\
-    L \,\frac{di_L}{dt} &= -\v_2.
+    L \,\frac{di_L}{dt} &= -v_2.
     \end{aligned}
     $$
 
     **Функция нелинейности**:
 
     $$
-    g(v_1) \=\; Gb \cdot v_1 \+\ 0.5 \(Ga - Gb)\\bigl(\lvert v_1 + Bp\rvert - \lvert v_1 - Bp\rvert\bigr).
+    g(v_1) \=\ Gb \cdot v_1 \+\ 0.5 \(Ga - Gb)\\bigl(\lvert v_1 + Bp\rvert - \lvert v_1 - Bp\rvert\bigr).
     $$
 
   - Вычисляет решения системы с помощью двух численных методов:
