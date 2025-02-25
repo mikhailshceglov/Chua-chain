@@ -46,11 +46,8 @@ sol_DOPRI8 = dopri8_integrate(
     tol=1e-7
 )
 
-# Вычисление ошибок
-# Абсолютная ошибка для каждого временного шага: вектор разности решений
-error_vec = sol_RK45['y'] - sol_DOPRI8['y']
-# L2-норма ошибки по каждому временно шагу (норма по столбцам)
-error_L2 = np.linalg.norm(error_vec, axis=0)
+error_vec = sol_RK45['y'] - sol_DOPRI8['y']     # Абсолютная ошибка для каждого временного шага: вектор разности решений
+error_L2 = np.linalg.norm(error_vec, axis=0)    # L2-норма ошибки по каждому временно шагу (норма по столбцам)
 
 # Относительная ошибка: отношение L2-нормы ошибки к L2-норме эталонного решения
 epsilon = 1e-12  # для избежания деления на 0
@@ -77,7 +74,7 @@ ylim = (np.min(all_iL), np.max(all_iL))
 
 fig, axs = plt.subplots(2, 2, figsize=(14, 10))
 
-# Подграфик 1: анимация RK45
+# Анимация RK45
 ax1 = axs[0, 0]
 ax1.set_title("Анимация: RK45 (Custom)")
 ax1.set_xlabel("v_C1 (В)")
@@ -88,7 +85,7 @@ ax1.set_ylim(ylim)
 line_RK45_ax1, = ax1.plot([], [], lw=0.5, color='blue', label='RK45 (Custom)')
 ax1.legend()
 
-# Подграфик 2: анимация DOPRI8
+# Анимация DOPRI8
 ax2 = axs[0, 1]
 ax2.set_title("Анимация: DOPRI8 (Custom)")
 ax2.set_xlabel("v_C1 (В)")
@@ -99,7 +96,7 @@ ax2.set_ylim(ylim)
 line_DOPRI8_ax2, = ax2.plot([], [], lw=0.5, color='magenta', label='DOPRI8 (Custom)')
 ax2.legend()
 
-# Подграфик 3: совместная анимация
+# Совместная анимация
 ax3 = axs[1, 0]
 ax3.set_title("Совместная анимация: RK45 и DOPRI8")
 ax3.set_xlabel("v_C1 (В)")
@@ -111,7 +108,7 @@ line_RK45_ax3, = ax3.plot([], [], lw=0.5, color='blue', label='RK45 (Custom)')
 line_DOPRI8_ax3, = ax3.plot([], [], lw=0.5, color='magenta', label='DOPRI8 (Custom)')
 ax3.legend()
 
-# Подграфик 4: итоговый фазовый портрет
+# Итоговый фазовый график
 ax4 = axs[1, 1]
 ax4.set_title("Итоговый фазовый портрет")
 ax4.set_xlabel("v_C1 (В)")

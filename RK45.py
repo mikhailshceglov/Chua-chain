@@ -1,16 +1,14 @@
 import numpy as np
 
-def rk45_integrate(f, t_span, y0, t_eval, args=(), tol=1e-6, h_max=None, h_min=1e-6):
+def rk45_integrate(f, t_span, y0, t_eval, args=(), tol=1e-6, h_min=1e-6):
     t0, tf = t_span
     t = t0
     y = np.array(y0, dtype=float)
+
     # Начальный шаг
-    if h_max is None:
-        h = (tf - t0) / 1000
-    else:
-        h = min((tf - t0) / 1000, h_max)
-    
-    # Коэффициенты метода Дорманд–Принс
+    h = (tf - t0) / 1000
+
+    # Коэффициенты метода РУНГЕ КУТТА
     c2 = 1/5
     c3 = 3/10
     c4 = 4/5
@@ -45,7 +43,7 @@ def rk45_integrate(f, t_span, y0, t_eval, args=(), tol=1e-6, h_max=None, h_min=1
     a75 = -2187/6784
     a76 = 11/84
 
-    # Весовые коэффициенты для 5-го порядка (решение)
+    # Весовые коэффициенты для 5-го порядка 
     b1 = 35/384
     b2 = 0
     b3 = 500/1113
@@ -54,7 +52,7 @@ def rk45_integrate(f, t_span, y0, t_eval, args=(), tol=1e-6, h_max=None, h_min=1
     b6 = 11/84
     b7 = 0
 
-    # Весовые коэффициенты для 4-го порядка (оценка)
+    # Весовые коэффициенты для 4-го порядка
     b1_star = 5179/57600
     b2_star = 0
     b3_star = 7571/16695
@@ -89,9 +87,9 @@ def rk45_integrate(f, t_span, y0, t_eval, args=(), tol=1e-6, h_max=None, h_min=1
 
         # 5-й порядок (решение)
         y5 = y + h * (b1 * k1 + b2 * k2 + b3 * k3 + b4 * k4 + b5 * k5 + b6 * k6 + b7 * k7)
+
         # 4-й порядок (оценка)
-        y4 = y + h * (b1_star * k1 + b2_star * k2 + b3_star * k3 + b4_star * k4 +
-                      b5_star * k5 + b6_star * k6 + b7_star * k7)
+        y4 = y + h * (b1_star * k1 + b2_star * k2 + b3_star * k3 + b4_star * k4 + b5_star * k5 + b6_star * k6 + b7_star * k7)
 
         # Оценка погрешности
         err = np.linalg.norm(y5 - y4, ord=np.inf)
@@ -120,11 +118,9 @@ def rk45_integrate(f, t_span, y0, t_eval, args=(), tol=1e-6, h_max=None, h_min=1
         else:
             s = 0.84 * (tol / err) ** 0.25
         h = s * h
-        if h_max is not None and h > h_max:
-            h = h_max
         if h < h_min:
             h = h_min
 
     sol_t = np.array(sol_t)
-    sol_y = np.array(sol_y).T  # shape: (n_variables, n_points)
+    sol_y = np.array(sol_y).T 
     return {'t': sol_t, 'y': sol_y}
