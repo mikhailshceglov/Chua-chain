@@ -6,7 +6,7 @@ def rk45_integrate(f, t_span, y0, t_eval, args=(), tol=1e-6, h_min=1e-6):
     y = np.array(y0, dtype=float)
 
     # Начальный шаг
-    h = (tf - t0) / 1000
+    h = (tf - t0) / 10000
 
     # Коэффициенты метода РУНГЕ КУТТА
     c2 = 1/5
@@ -93,6 +93,7 @@ def rk45_integrate(f, t_span, y0, t_eval, args=(), tol=1e-6, h_min=1e-6):
 
         # Оценка погрешности
         err = np.linalg.norm(y5 - y4, ord=np.inf)
+
         # Если ошибка приемлема, шаг принимается
         if err < tol:
             t_new = t + h
@@ -100,6 +101,7 @@ def rk45_integrate(f, t_span, y0, t_eval, args=(), tol=1e-6, h_min=1e-6):
             t = t_new
             ts.append(t)
             ys.append(y.copy())
+
             # Сохраняем значения, попадающие в t_eval
             while eval_idx < len(t_eval) and t_eval[eval_idx] <= t:
                 if len(ts) >= 2:
@@ -112,11 +114,7 @@ def rk45_integrate(f, t_span, y0, t_eval, args=(), tol=1e-6, h_min=1e-6):
                 sol_t.append(t_eval[eval_idx])
                 eval_idx += 1
 
-        # Расчёт нового шага (если err == 0, увеличиваем шаг)
-        if err == 0:
-            s = 4.0
-        else:
-            s = 0.84 * (tol / err) ** 0.25
+        s = (tol / err) ** 0.25
         h = s * h
         if h < h_min:
             h = h_min
