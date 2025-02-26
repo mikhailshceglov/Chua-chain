@@ -79,6 +79,7 @@ def dopri8_integrate(f, t_span, y0, t_eval, args=(), tol=1e-6, h_min=1e-8):
                 eval_idx += 1
 
         s = (tol / err) ** (1/8)
+
         h = s * h
         if h < h_min:
             h = h_min
