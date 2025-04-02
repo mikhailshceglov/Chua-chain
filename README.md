@@ -46,7 +46,7 @@
     }
     ```
 
-![Chua Phase default](images/default.png)
+![Chua Phase default](image/default.png)
 
 
   - **onecoil**:
@@ -61,7 +61,7 @@
     }
     ```
 
-![Chua Phase onecoil](images/onecoil.png)
+![Chua Phase onecoil](image/onecoil.png)
 
   - **periodic**:
     ```json
@@ -75,7 +75,7 @@
     }
     ```
 
-![Chua Phase periodic](images/periodic.png)
+![Chua Phase periodic](image/periodic.png)
 
   - **chaotic**:
     ```json
@@ -89,7 +89,7 @@
     }
     ```
 
-![Chua Phase chaotic](images/chaotic.png)
+![Chua Phase chaotic](image/chaotic.png)
 
 - **chya_chain.pdf**  
   Документ с теоретическим описанием модели цепи Чуа, в котором приведены выводы уравнений системы и обсуждаются особенности нелинейного элемента (диода Чуа).
